@@ -1,39 +1,36 @@
-import "Player";
-import "pipe_manager";
-import "scoreboard";
+-- CoreLibs
+import("CoreLibs/object")
+import("CoreLibs/graphics")
+import("CoreLibs/sprites")
+import("CoreLibs/timer")
+import("CoreLibs/animation")
 
-screenHeight = playdate.display.getHeight();
-screenWidth = playdate.display.getWidth()
-player = Player();
-score = 0;
+-- Libraries
+import("scripts/libraries/AnimatedSprite")
 
+-- Game
+import("scripts/player")
+import("scripts/pipe")
+import("scripts/pipePair")
+import("scripts/pipeManager")
+import("scripts/gameScene")
 
-local pipeManager = PipeManager(5, 150);
-local scoreboard = scoreboard(score);
-local gfx <const> = playdate.graphics;
+-- Define global variables
+pd = playdate
+gfx = playdate.graphics
+screenWidth = pd.display.getWidth()
+screenHeight = pd.display.getHeight()
+local gameScene = GameScene()
 
 local function loadGame()
 	playdate.display.setRefreshRate(60)
 	math.randomseed(playdate.getSecondsSinceEpoch())
 end
 
-
-local function updateGame()
-	player:update();
-	pipeManager:update();
-end
-
-local function drawGame()
-	gfx.clear();
-	player:draw();
-	pipeManager:draw();
-	scoreboard:draw();
-end
-
 loadGame()
 
-function playdate.update()
-	updateGame();
-	drawGame();
-	playdate.drawFPS(0, 0)
+function pd.update()
+	gfx.sprite.update()
+	pd.timer.updateTimers()
+	gameScene:update()
 end
